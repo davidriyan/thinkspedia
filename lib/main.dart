@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:week_one_thinkspedia/day_two_page.dart';
-import 'package:week_one_thinkspedia/shared_prefence_example.dart';
+import 'shared_preferences_example.dart';
 // import 'package:week_one_thinkspedia/home_page.dart';
 
 void main() {
@@ -14,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SharedPrefenceExample(),
+      home: SharedPreferencesExample(),
     );
   }
 }
