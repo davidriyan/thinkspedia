@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:week_one_thinkspedia/third_page.dart';
 
 class SharedPreferencesExample extends StatefulWidget {
   const SharedPreferencesExample({super.key});
@@ -37,8 +38,8 @@ class _SharedPreferencesExampleState extends State<SharedPreferencesExample> {
       final myData =
           json.decode(sharedPreferences.getString('myData') ?? 'No data')
               as Map<String, dynamic>;
-              //bagian di bawah ini adalah proses mengambil data dari objek Dart yang telah di-decode dari string JSON, 
-              //dan menggunakannya untuk menginisialisasi nilai beberapa variabel.
+      //bagian di bawah ini adalah proses mengambil data dari objek Dart yang telah di-decode dari string JSON,
+      //dan menggunakannya untuk menginisialisasi nilai beberapa variabel.
       counter = int.parse(myData['counter']);
       isDark = myData['isDark'] == 'true' ? true : false;
     }
@@ -104,6 +105,16 @@ class _SharedPreferencesExampleState extends State<SharedPreferencesExample> {
                     onPressed: remove, child: const Icon(Icons.remove)),
                 ElevatedButton(onPressed: add, child: const Icon(Icons.add)),
               ]),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return ThirdPage(
+                        isDark: isDark,
+                      );
+                    }));
+                  },
+                  child: const Icon(Icons.arrow_forward))
             ],
           ),
           floatingActionButton: FloatingActionButton(
