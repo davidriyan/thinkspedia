@@ -16,6 +16,10 @@ class SharedPreferencesExample extends StatefulWidget {
 class _SharedPreferencesExampleState extends State<SharedPreferencesExample> {
   int counter = 0;
   bool isDark = false;
+  String name = '';
+
+  TextEditingController nameController = TextEditingController();
+
   Future<void> setPreferences() async {
     final sharedPreferences = await SharedPreferences.getInstance();
     //mengecek apakah data myData sudah ada di penyimpanan atau belum
@@ -26,6 +30,7 @@ class _SharedPreferencesExampleState extends State<SharedPreferencesExample> {
     final myData = json.encode({
       'counter': counter.toString(),
       'isDark': isDark.toString(),
+      'name': name.toString()
     });
     //Menyimpan string hasil dari encoding JSON ke dalam penyimpanan lokal menggunakan SharedPreferences. Ini memberikan cara sederhana dan efisien untuk menyimpan data kecil secara lokal pada perangkat.
     sharedPreferences.setString('myData', myData);
@@ -38,10 +43,11 @@ class _SharedPreferencesExampleState extends State<SharedPreferencesExample> {
       final myData =
           json.decode(sharedPreferences.getString('myData') ?? 'No data')
               as Map<String, dynamic>;
-      //bagian di bawah ini adalah proses mengambil data dari objek Dart yang telah di-decode dari string JSON,
+      //! bagian di bawah ini adalah proses mengambil data dari objek Dart yang telah di-decode dari string JSON,
       //dan menggunakannya untuk menginisialisasi nilai beberapa variabel.
       counter = int.parse(myData['counter']);
       isDark = myData['isDark'] == 'true' ? true : false;
+      name = myData['name'];
     }
   }
 
@@ -55,6 +61,11 @@ class _SharedPreferencesExampleState extends State<SharedPreferencesExample> {
     setPreferences();
   }
 
+  void nameUser() {
+    name = nameController.text;
+    setPreferences();
+  }
+
   void changeTheme() {
     isDark = !isDark;
     setPreferences();
@@ -63,10 +74,12 @@ class _SharedPreferencesExampleState extends State<SharedPreferencesExample> {
   void refresh() {
     counter = 0;
     isDark = false;
+    name = '';
     setPreferences();
   }
 
   ThemeData dark = ThemeData(
+      // useMaterial3: false,
       brightness: Brightness.dark,
       primaryColor: Colors.pink,
       primarySwatch: Colors.pink);
@@ -78,6 +91,7 @@ class _SharedPreferencesExampleState extends State<SharedPreferencesExample> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return FutureBuilder(
       future: getPreferences(),
       builder: (context, _) => MaterialApp(
@@ -100,21 +114,59 @@ class _SharedPreferencesExampleState extends State<SharedPreferencesExample> {
                 ),
               ),
               const Gap(20),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                ElevatedButton(
-                    onPressed: remove, child: const Icon(Icons.remove)),
-                ElevatedButton(onPressed: add, child: const Icon(Icons.add)),
-              ]),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: remove,
+                    child: const Icon(Icons.remove),
+                  ),
+                  ElevatedButton(
+                    onPressed: add,
+                    child: const Icon(Icons.add),
+                  ),
+                ],
+              ),
               ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                      return ThirdPage(
-                        isDark: isDark,
-                      );
-                    }));
-                  },
-                  child: const Icon(Icons.arrow_forward))
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return ThirdPage(
+                          isDark: isDark,
+                          counter: counter,
+                          name: name,
+                        );
+                      },
+                    ),
+                  );
+                },
+                child: const Icon(Icons.arrow_forward),
+              ),
+              const Gap(20),
+              SizedBox(
+                width: size.width / 1.9,
+                child: TextField(
+                  controller: nameController,
+                  decoration: const InputDecoration(
+                    hintText: 'Masukkan nama anda',
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(),
+                    ),
+                  ),
+                ),
+              ),
+              const Gap(20),
+              ElevatedButton(
+                onPressed: nameUser,
+                child: const Text('Submit'),
+              ),
+              const Gap(20),
+              Text(
+                name.isEmpty ? 'No data' : name,
+                style: const TextStyle(fontSize: 20),
+              )
             ],
           ),
           floatingActionButton: FloatingActionButton(
