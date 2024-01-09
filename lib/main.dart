@@ -1,8 +1,23 @@
 import 'package:flutter/material.dart';
-import 'shared_preferences_example.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:week_one_thinkspedia/hive_page.dart';
+import 'package:path_provider/path_provider.dart' as pathprovider;
+import 'package:week_one_thinkspedia/models/pegawai.dart';
+// import 'package:week_one_thinkspedia/hive_page.dart';
+// import 'package:week_one_thinkspedia/shared_preferences_example.dart';
+// import 'shared_preferences_example.dart';
 // import 'package:week_one_thinkspedia/home_page.dart';
 
-void main() {
+Box? box;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final appDocumentDirectory =
+      await pathprovider.getApplicationDocumentsDirectory();
+  Hive.init(appDocumentDirectory.path);
+//! melakukan register adapter, agar data di adapter dapat digunakan
+  Hive.registerAdapter(PegawaiAdapter());
+
   runApp(const MyApp());
 }
 
@@ -13,7 +28,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SharedPreferencesExample(),
+      home: HivePage(),
     );
   }
 }
